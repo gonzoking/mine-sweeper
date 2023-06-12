@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {MineFieldContainer, Row, MinesCount,RestartStyled, MinesBoard} from './mines-container.styles';
 import {ButtonCell} from '../components/cell';
 import { useMinesHook } from '../hooks/mines-hook';

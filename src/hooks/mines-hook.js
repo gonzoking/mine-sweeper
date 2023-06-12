@@ -27,30 +27,30 @@ export const useMinesHook = ({dimentions, minesTotal})=> {
 
     const checkBombNumbers = (row,column)=> {
         let count =0;
-        if(column-1>-1 && row-1>-1 && board[row-1][column-1].isBomb===true) {
+        if(column-1>-1 && row-1>-1 && board[row-1][column-1].isBomb) {
             count++;
         }
-        if(column-1>-1 && board[row][column-1].isBomb===true) {
+        if(column-1>-1 && board[row][column-1].isBomb) {
             count++;
         }
-        if(column-1>-1 && row+1<xLen && board[row+1][column-1].isBomb===true) {
-            count++;
-        }
-    
-        if(row+1<xLen && board[row+1][column].isBomb===true) {
-            count++;
-        }
-        if(row-1>-1 && board[row-1][column].isBomb===true) {
+        if(column-1>-1 && row+1<xLen && board[row+1][column-1].isBomb) {
             count++;
         }
     
-        if(column+1<yLen && board[row][column+1].isBomb===true) {
+        if(row+1<xLen && board[row+1][column].isBomb) {
             count++;
         }
-        if(column+1<yLen && row+1 < xLen && board[row+1][column+1].isBomb===true) {
+        if(row-1>-1 && board[row-1][column].isBomb) {
             count++;
         }
-        if(column+1<yLen && row-1 > -1 && board[row-1][column+1].isBomb===true) {
+    
+        if(column+1<yLen && board[row][column+1].isBomb) {
+            count++;
+        }
+        if(column+1<yLen && row+1 < xLen && board[row+1][column+1].isBomb) {
+            count++;
+        }
+        if(column+1<yLen && row-1 > -1 && board[row-1][column+1].isBomb) {
             count++;
         }
         return count;
@@ -105,28 +105,35 @@ const fillNumbers = () => {
             }
         }    
     }
+
+    const moveRight = (column) => column+1;
+    const moveLeft = (column) => column-1;
+    const moveDown = (row) => row+1;
+    const moveUp = (row) => row-1;
+    
+
     const searchEmpty =(currentBoard, row,column, startRow, startColumn) => {
         if(row<0 || row>= xLen || column<0 || column>= yLen ) {
             return currentBoard;
         }
-        
-        if(!currentBoard[row][column].isBomb && !currentBoard[row][column].isClicked && !currentBoard[row][column].isSigned) {
-            currentBoard[row][column].isClicked = true;
+        const currentPos = currentBoard[row][column];
+        if(!currentPos.isBomb && !currentPos.isClicked && !currentPos.isSigned) {
+            currentPos.isClicked = true;
         }else{
             return currentBoard;
         }
-        if(currentBoard[row][column].number >0 && row !==startRow && column !==startColumn) {
-            return currentBoard;
+        if(currentPos.number >0 && row !==startRow && column !==startColumn) {
+            return currentBoard;        
+        }        
         
-        }
-        currentBoard = searchEmpty(currentBoard, row+1,column-1,startRow,startColumn);
-        currentBoard = searchEmpty(currentBoard, row+1,column,startRow,startColumn);       
-        currentBoard = searchEmpty(currentBoard, row,column+1,startRow,startColumn);       
-        currentBoard = searchEmpty(currentBoard, row,column-1,startRow,startColumn);
-        currentBoard = searchEmpty(currentBoard, row+1,column+1,startRow,startColumn);
-        currentBoard = searchEmpty(currentBoard, row-1,column-1,startRow,startColumn);
-        currentBoard = searchEmpty(currentBoard, row-1,column,startRow,startColumn);
-        currentBoard = searchEmpty(currentBoard, row-1,column+1,startRow,startColumn);
+        currentBoard = searchEmpty(currentBoard, moveDown(row),moveLeft(column),startRow,startColumn);
+        currentBoard = searchEmpty(currentBoard, moveDown(row),column,startRow,startColumn);       
+        currentBoard = searchEmpty(currentBoard, row,moveRight(column),startRow,startColumn);       
+        currentBoard = searchEmpty(currentBoard, row,moveLeft(column),startRow,startColumn);
+        currentBoard = searchEmpty(currentBoard, moveDown(row),moveRight(column),startRow,startColumn);
+        currentBoard = searchEmpty(currentBoard, moveUp(row),moveLeft(column),startRow,startColumn);
+        currentBoard = searchEmpty(currentBoard, moveUp(row),column,startRow,startColumn);
+        currentBoard = searchEmpty(currentBoard, moveUp(row),moveRight(column),startRow,startColumn);
         return currentBoard;
     }
     const checkIfWon = (currentBoard) => {
